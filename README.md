@@ -32,7 +32,7 @@ npm install
 or
 
 yarn install
-1. Run the Development Server
+3. Run the Development Server
 Once the dependencies are installed, start the development server:
 
 
@@ -52,21 +52,28 @@ Ensure you have a svelte.config.js configured with the appropriate adapter for d
 
 Create a _redirects file in the static/ folder to handle the routing issue on page refreshes. Add this line:
 
-Edit
 /*    /index.html   200
 Push your changes to GitHub, and Netlify will automatically build and deploy your site.
 
 # File Structure
 
 /src
+
   /routes      - SvelteKit routes for different pages
+
   /components  - Reusable Svelte components (e.g., Header, PackageCard)
+
 /static         - Static assets like images, fonts, and the _redirects file
+
 /svelte.config.js   - SvelteKit configuration file
+
 /package.json      - Project metadata and dependencies
+
 /tsconfig.json      - TypeScript configuration file
+
 /.gitignore         - Gitignore file to exclude unnecessary files from version control
-Contributing
+
+# Contributing
 Feel free to open issues or submit pull requests for bug fixes, improvements, or features.
 
 # Steps to Contribute:
