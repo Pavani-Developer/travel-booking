@@ -155,8 +155,33 @@
         </div>
         </main>
 
+
     
-</div>
+<!-- Pagination Controls -->
+        <div class="flex justify-center gap-4 mt-20">
+            <button
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                on:click={() => goToPage($currentPage - 1)}
+                disabled={$currentPage === 1}
+            >
+                Previous
+            </button>
+
+            <span class="self-center text-gray-600 text-lg">
+                {$currentPage} / {$totalPages}
+            </span>
+
+            <button
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                on:click={() => goToPage($currentPage + 1)}
+                disabled={$currentPage === $totalPages}
+            >
+                Next
+            </button>
+        </div>
+    </div>
+
+
 
 <style>
     .aspect-w-16 {

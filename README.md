@@ -61,14 +61,37 @@ Push your changes to GitHub, and Netlify will automatically build and deploy you
 ## File Structure
 ```pgsql
 /src
-  /routes      - SvelteKit routes for different pages
-  /components  - Reusable Svelte components (e.g., Header, PackageCard)
-/static         - Static assets like images, fonts, and the _redirects file
-/svelte.config.js   - SvelteKit configuration file
-/package.json      - Project metadata and dependencies
+  /lib
+    /data          - Contains static or mock data used in the app (e.g., travelPackages.ts)
+    /stores         - Contains Svelte stores for managing application state (e.g., travelStore.ts)
+  /routes
+    /booking/[id]  - Dynamic route for viewing specific booking details (e.g., /booking/1)
+    /packages/[id] - Dynamic route for viewing specific package details (e.g., /packages/1)
+    /+layout.svelte - Global layout wrapper for the app, used for header, footer, etc.
+    /+page.svelte   - Home page of the app displaying a list of travel packages
+    /Header.svelte  - Reusable component for the site's header with navigation and branding
+/static
+  - Static assets such as images, fonts, and the _redirects file
+/svelte.config.js    - SvelteKit configuration file
+/package.json       - Project metadata and dependencies
 /tsconfig.json      - TypeScript configuration file
 /.gitignore         - Gitignore file to exclude unnecessary files from version control
+unnecessary files from version control
 ```
+
+# Key Points of the Structure:
+
+- **Modularization**: You've broken down your app into small, reusable pieces such as components (e.g., Header.svelte), pages (e.g., +page.svelte), and state management (e.g., travelStore.ts).
+- **Separation of Concerns**: Your data, stores, and UI components are separated, making it easier to maintain and scale the app.
+- **Routing**: You're utilizing dynamic routing (e.g., booking/[id] and packages/[id]), allowing the app to display details for individual packages and bookings based on the id provided in the URL.
+  
+# Example Flow:
+
+- The home page (+page.svelte) will display a list of travel packages by pulling data from travelPackages.ts.
+- Clicking on a package will navigate to the packages/[id]/+page.svelte, where the specific package's details will be displayed.
+- If users want to book a package, they will navigate to booking/[id]/+page.svelte and fill out a booking form.
+- This structure is clean, and following this approach will make it easy to extend this app in the future if you decide to add more features like authentication, more complex state management, or additional pages.
+
 ## Contributing
 
 Feel free to open issues or submit pull requests for bug fixes, improvements, or features.
