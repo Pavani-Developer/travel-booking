@@ -7,16 +7,27 @@ A travel booking web application built with SvelteKit and TypeScript. This app a
 
 # Features
 *Browse travel packages*: View available travel packages with images, descriptions, prices, and durations.
-Search functionality: Filter travel packages by destination or other criteria.
+
+*Search functionality*: Filter travel packages by destination or other criteria.
+
 *Booking*: Users can fill out a booking form with personal details, travel dates, and number of travelers.
+
 *Responsive design*: The app is fully responsive and works across all device sizes.
+
 *Deployment-ready*: The app is ready for deployment to Netlify or any other hosting platform.
-Technologies Used
+
+# Technologies Used
+
 *SvelteKit*: A modern framework for building fast, static, and dynamic websites and apps with Svelte.
+
 *TypeScript*: Superset of JavaScript to improve development with static typing.
+
 *Tailwind CSS*: A utility-first CSS framework to style the app with responsive and modern design.
+
 *Netlify*: For deployment (configured with _redirects file to fix page refresh issues).
-Setup and Installation
+
+# Setup and Installation
+
 Follow these steps to get the project up and running locally:
 
 1. Clone the Repository
