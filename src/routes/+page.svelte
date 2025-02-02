@@ -2,47 +2,25 @@
     import { packages, searchQuery } from "$lib/stores/travelStore";
     import { derived, writable } from "svelte/store";
 
-    // Filter values
     let minPrice = writable(0);
     let maxPrice = writable(5000);
     let minDuration = writable(0);
-    let maxDuration = writable(30); // Assuming duration is in days
+    let maxDuration = writable(30);
 
     const currentPage = writable(1);
-    const packagesPerPage = 6;
+    const packagesPerPage = 8;  // Increased to show more items per row
 
-    // Filtered packages
     const filteredPackages = derived(
         [packages, searchQuery, minPrice, maxPrice, minDuration, maxDuration],
-        ([
-            $packages,
-            $searchQuery,
-            $minPrice,
-            $maxPrice,
-            $minDuration,
-            $maxDuration,
-        ]) =>
+        ([$packages, $searchQuery, $minPrice, $maxPrice, $minDuration, $maxDuration]) =>
             $packages.filter((pkg) => {
-                // Check name matches the search query
-                const nameMatches = pkg.name
-                    .toLowerCase()
-                    .includes($searchQuery.toLowerCase());
-
-                // Price filter logic
-                const priceMatches =
-                    pkg.price >= $minPrice && pkg.price <= $maxPrice;
-
-                // Duration filter logic
-                const durationMatches =
-                    parseInt(pkg.duration) >= $minDuration &&
-                    parseInt(pkg.duration) <= $maxDuration;
-
-                // Apply all filters
+                const nameMatches = pkg.name.toLowerCase().includes($searchQuery.toLowerCase());
+                const priceMatches = pkg.price >= $minPrice && pkg.price <= $maxPrice;
+                const durationMatches = parseInt(pkg.duration) >= $minDuration && parseInt(pkg.duration) <= $maxDuration;
                 return nameMatches && priceMatches && durationMatches;
             }),
     );
 
-    // Pagination logic
     const paginatedPackages = derived(
         [filteredPackages, currentPage],
         ([$filteredPackages, $currentPage]) => {
@@ -65,161 +43,128 @@
     };
 </script>
 
-<div class="min-h-screen bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-4xl font-bold text-white mb-8 text-center">
-            Travel Booking Packages
-        </h1>
+<div class="min-h-screen bg-slate-900">
+    <!-- Header with Search -->
+    <header class="border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-white">
+                    Travel Packages
+                </h1>
+                
+                <!-- Search Bar -->
+                <div class="flex items-center gap-4">
+                    <div class="relative w-full sm:w-72 md:w-96">
+                      <input
+                        bind:value={$searchQuery}
+                        placeholder="Search"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:ring-2 focus:ring-[#182978] focus:border-transparent"
+                      />
+                      <button class="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+            </div>
+        </div>
+    </header>
 
-        <!-- Search & Filters -->
-        <div
-            class="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
-            <!-- Search Input -->
-            <input
-                bind:value={$searchQuery}
-                placeholder="Search..."
-                class="border border-gray-300 rounded-lg p-3 w-full sm:w-96 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-            <!-- Price Range Inputs -->
-            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <div class="flex items-center gap-2">
-                    <label for="minPrice" class="text-white"
-                        >Min : ${$minPrice}</label
-                    >
+    <!-- Filters Bar -->
+    <div class="border-b bg-slate-900 sticky top-0 z-10 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center gap-8 overflow-x-auto">
+                <!-- Price Filter -->
+                <div class="flex items-center gap-2 min-w-fit">
+                    <span class="text-sm font-medium">Price Range:</span>
                     <input
                         type="range"
-                        id="minPrice"
                         bind:value={$minPrice}
                         min="0"
                         max="5000"
-                        class="w-full"
+                        class="w-24"
                     />
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <label for="maxPrice" class="text-white"
-                        >Max : ${$maxPrice}</label
-                    >
+                    <span class="text-sm">${$minPrice} - ${$maxPrice}</span>
                     <input
                         type="range"
-                        id="maxPrice"
                         bind:value={$maxPrice}
                         min="0"
                         max="5000"
-                        class="w-full"
+                        class="w-24"
                     />
                 </div>
-            </div>
 
-            <!-- Duration Range Inputs -->
-            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <div class="flex items-center gap-2">
-                    <label for="minDuration" class="text-white"
-                        >Min : {$minDuration} days</label
-                    >
+                <!-- Duration Filter -->
+                <div class="flex items-center gap-2 min-w-fit">
+                    <span class="text-sm font-medium">Duration:</span>
                     <input
                         type="range"
-                        id="minDuration"
                         bind:value={$minDuration}
                         min="0"
                         max="30"
-                        class="w-full"
+                        class="w-24"
                     />
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <label for="maxDuration" class="text-white"
-                        >Max : {$maxDuration} days</label
-                    >
+                    <span class="text-sm">{$minDuration} - {$maxDuration} days</span>
                     <input
                         type="range"
-                        id="maxDuration"
                         bind:value={$maxDuration}
                         min="0"
                         max="30"
-                        class="w-full"
+                        class="w-24"
                     />
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Package List -->
-        <div class="relative grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+    <!-- Package Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {#each $paginatedPackages as pkg}
-                <a
-                    href={`/packages/${pkg.id}`}
-                    class="group relative bg-white rounded-xl overflow-hidden transform transition-all duration-500 hover:-translate-y-2"
-                    style="box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); perspective: 1000px; transform-style: preserve-3d;"
-                >
-                    <!-- Main Card Content -->
-                    <div class="relative">
-                        <!-- Image Container -->
-                        <div class="aspect-w-4 aspect-h-3">
-                            <img
-                                src={pkg.image}
-                                alt={`Image of ${pkg.name}`}
-                                class="w-full h-full object-cover"
-                            />
-                            <div
-                                class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"
-                            ></div>
-                        </div>
-
-                        <!-- White Info Box -->
-                        <div
-                            class="absolute bottom-0 left-0 right-0 bg-white p-6 transform translate-y-1/2 group-hover:translate-y-0 transition-transform duration-500"
-                        >
-                            <h2 class="text-xl font-bold text-gray-900 mb-2">
-                                {pkg.name}
-                            </h2>
-                            <p class="text-gray-600">{pkg.destination}</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <p class="text-[#182978] font-semibold">
-                                    ${pkg.price}
-                                </p>
-                                <button
-                                    class="bg-[#182978] text-white px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                                    >See More</button
-                                >
+                <a href={`/packages/${pkg.id}`} class="group block">
+                    <div class="relative aspect-w-16 aspect-h-9 mb-2 rounded-xl overflow-hidden">
+                        <img
+                            src={pkg.image}
+                            alt={pkg.name}
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <button class="absolute top-3 right-3 p-2 rounded-full" aria-label="Add to favorites">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between">
+                            <h3 class="font-medium text-white">{pkg.destination}</h3>
+                            <div class="flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="white" viewBox="0 0 24 24">
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                                <span class="text-white">4.9</span>
                             </div>
                         </div>
+                        <p class="text-white">{pkg.duration} days experience</p>
+                        <p class="text-white">Available from {new Date().toLocaleDateString()}</p>
+                        <p class="font-semibold text-white">${pkg.price} per person</p>
                     </div>
                 </a>
             {/each}
         </div>
+        </main>
 
-        <!-- Pagination Controls -->
-        <div class="flex justify-center gap-4 mt-20">
-            <button
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                on:click={() => goToPage($currentPage - 1)}
-                disabled={$currentPage === 1}
-            >
-                Previous
-            </button>
-
-            <span class="self-center text-gray-600 text-lg">
-                {$currentPage} / {$totalPages}
-            </span>
-
-            <button
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                on:click={() => goToPage($currentPage + 1)}
-                disabled={$currentPage === $totalPages}
-            >
-                Next
-            </button>
-        </div>
-    </div>
+    
 </div>
 
 <style>
-    .aspect-w-4 {
+    .aspect-w-16 {
         position: relative;
-        padding-bottom: 75%; /* 4:3 aspect ratio */
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
     }
-    .aspect-w-4 > * {
+    
+    .aspect-w-16 > * {
         position: absolute;
         height: 100%;
         width: 100%;
